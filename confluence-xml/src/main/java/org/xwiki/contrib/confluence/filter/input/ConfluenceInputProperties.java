@@ -241,6 +241,8 @@ public class ConfluenceInputProperties extends DefaultFilterStreamProperties
      */
     private boolean pageOrderEnabled = true;
 
+    private Set<String> droppedMacros = Collections.emptySet();
+
     /**
      * @return The source to load the wiki from
      */
@@ -1198,5 +1200,23 @@ public class ConfluenceInputProperties extends DefaultFilterStreamProperties
     public void setPageOrderEnabled(boolean pageOrderEnabled)
     {
         this.pageOrderEnabled = pageOrderEnabled;
+    }
+
+    /**
+     * @return a set of macros that should be replaced by a group.
+     */
+    @PropertyName("Dropped confluence macros")
+    @PropertyDescription("Defines a comma separated list of confluence macros that will be transformed into groups.")
+    public Set<String> getDroppedMacros()
+    {
+        return droppedMacros;
+    }
+
+    /**
+     * @param droppedMacros see {@link #getDroppedMacros()}.
+     */
+    public void setDroppedMacros(Set<String> droppedMacros)
+    {
+        this.droppedMacros = droppedMacros;
     }
 }

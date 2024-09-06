@@ -19,6 +19,8 @@
  */
 package org.xwiki.contrib.confluence.parser.xhtml;
 
+import java.util.Set;
+
 import org.xwiki.filter.DefaultFilterStreamProperties;
 import org.xwiki.filter.input.InputSource;
 import org.xwiki.filter.type.FilterStreamType;
@@ -66,6 +68,11 @@ public class ConfluenceXHTMLInputProperties extends DefaultFilterStreamPropertie
      * @see #getMacroSupport()
      */
     private ConfluenceMacroSupport macroSupport;
+
+    /**
+     * @see #getDroppedMacros()
+     */
+    private Set<String> droppedMacros;
 
     /**
      * @return The source to load the wiki from
@@ -139,5 +146,21 @@ public class ConfluenceXHTMLInputProperties extends DefaultFilterStreamPropertie
     public void setMacroSupport(ConfluenceMacroSupport macroSupport)
     {
         this.macroSupport = macroSupport;
+    }
+
+    /**
+     * @return a set of macros that should be replaced by a group.
+     */
+    public Set<String> getDroppedMacros()
+    {
+        return this.droppedMacros;
+    }
+
+    /**
+     * @param droppedMacros see {@link #getDroppedMacros()}.
+     */
+    public void setDroppedMacros(Set<String> droppedMacros)
+    {
+        this.droppedMacros = droppedMacros;
     }
 }

@@ -21,6 +21,7 @@ package org.xwiki.contrib.confluence.parser.xhtml.internal.wikimodel;
 
 import org.xwiki.contrib.confluence.parser.xhtml.internal.ConfluenceXHTMLParser;
 import org.xwiki.contrib.confluence.parser.xhtml.internal.wikimodel.MacroTagHandler.ConfluenceMacro;
+import org.xwiki.rendering.wikimodel.impl.WikiScannerContext;
 import org.xwiki.rendering.wikimodel.xhtml.impl.TagContext;
 
 /**
@@ -43,6 +44,32 @@ public class RichTextBodyTagHandler extends AbstractRichContentTagHandler
     public RichTextBodyTagHandler(ConfluenceXHTMLParser parser)
     {
         super(parser);
+    }
+
+    @Override
+    protected void begin(TagContext context)
+    {
+        Boolean isInDroppedMacro = (Boolean) context.getTagStack().getStackParameter(CONFLUENCE_IN_DROPPED_MACRO);
+
+        if (isInDroppedMacro == null || !isInDroppedMacro) {
+            super.begin(context);
+        } else {
+            context.getTagStack().pushStackParameters();
+        }
+    }
+
+    @Override
+    protected void end(TagContext context)
+    {
+
+        context.getTagStack().popScannerContext();
+        Boolean isInDroppedMacro = (Boolean) context.getTagStack().getStackParameter(CONFLUENCE_IN_DROPPED_MACRO);
+
+        if (isInDroppedMacro == null || !isInDroppedMacro) {
+            super.end(context);
+        } else {
+            context.getTagStack().popStackParameters();
+        }
     }
 
     @Override

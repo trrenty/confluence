@@ -23,8 +23,10 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.lang.reflect.Constructor;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -143,6 +145,8 @@ public class ConfluenceXHTMLParser extends AbstractWikiModelParser
 
     private ConfluenceMacroSupport macroSupport;
 
+    private Set<String> droppedMacros = Collections.emptySet();
+
     @Override
     public Syntax getSyntax()
     {
@@ -198,8 +202,8 @@ public class ConfluenceXHTMLParser extends AbstractWikiModelParser
         handlers.put("p", new ConfluenceParagraphTagHandler());
 
         handlers.put("ac:emoticon", new EmoticonTagHandler());
-        handlers.put("ac:macro", new MacroTagHandler(this.macroSupport));
-        handlers.put("ac:structured-macro", new MacroTagHandler(this.macroSupport));
+        handlers.put("ac:macro", new MacroTagHandler(this.macroSupport, droppedMacros));
+        handlers.put("ac:structured-macro", new MacroTagHandler(this.macroSupport, droppedMacros));
         handlers.put("ac:default-parameter", new DefaultMacroParameterTagHandler());
         handlers.put("ac:parameter", new MacroParameterTagHandler());
         handlers.put("ac:plain-text-body", new PlainTextBodyTagHandler());
@@ -344,6 +348,14 @@ public class ConfluenceXHTMLParser extends AbstractWikiModelParser
     public void setMacroSupport(ConfluenceMacroSupport macroSupport)
     {
         this.macroSupport = macroSupport;
+    }
+
+    /**
+     * @param droppedMacros the macros that will be transformed into groups.
+     */
+    public void setDroppedMacros(Set<String> droppedMacros)
+    {
+        this.droppedMacros = droppedMacros;
     }
 
     /**

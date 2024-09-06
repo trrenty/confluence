@@ -28,8 +28,10 @@ import org.xwiki.rendering.wikimodel.xhtml.impl.TagContext;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Handles macros.
@@ -50,7 +52,13 @@ import java.util.Map;
  */
 public class MacroTagHandler extends TagHandler implements ConfluenceTagHandler
 {
+    private static final String CLASS_FORMAT = "confluence_%s_content";
+
+    private static final String PARAMETER_NAME = "ac:name";
+
     private ConfluenceMacroSupport macroSupport;
+
+    private Set<String> droppedMacros = Collections.emptySet();
 
     /**
      * A Confluence Macro.
@@ -76,10 +84,13 @@ public class MacroTagHandler extends TagHandler implements ConfluenceTagHandler
          * The macro index.
          */
         public int index = -1;
+
+        public boolean dropped = false;
     }
 
     /**
      * Default constructor.
+     *
      * @param macroSupport macro support.
      */
     public MacroTagHandler(ConfluenceMacroSupport macroSupport)
@@ -88,35 +99,60 @@ public class MacroTagHandler extends TagHandler implements ConfluenceTagHandler
         this.macroSupport = macroSupport;
     }
 
+    /**
+     * @param macroSupport macro support.
+     * @param droppedMacros the macros that will be converted into groups.
+     */
+    public MacroTagHandler(ConfluenceMacroSupport macroSupport, Set<String> droppedMacros)
+    {
+        this(macroSupport);
+        this.droppedMacros = droppedMacros;
+    }
+
     @Override
     protected void begin(TagContext context)
     {
-        ConfluenceMacro macro = new ConfluenceMacro();
+        String macroName = context.getParams().getParameter(PARAMETER_NAME).getValue();
+        if (this.droppedMacros != null && this.droppedMacros.contains(macroName)) {
+            WikiParameters wikiParameters = new WikiParameters();
+            wikiParameters = wikiParameters.setParameter("class", String.format(CLASS_FORMAT, macroName));
+            context.getScannerContext().beginDocument(wikiParameters);
+            context.getTagStack().pushStackParameter(CONFLUENCE_IN_DROPPED_MACRO, true);
+        } else {
+            ConfluenceMacro macro = new ConfluenceMacro();
 
-        macro.name = context.getParams().getParameter("ac:name").getValue();
+            macro.name = macroName;
 
-        context.getTagStack().pushStackParameter(CONFLUENCE_CONTAINER, macro);
+            context.getTagStack().pushStackParameter(CONFLUENCE_CONTAINER, macro);
+        }
     }
 
     @Override
     protected void end(TagContext context)
     {
-        ConfluenceMacro macro = (ConfluenceMacro) context.getTagStack().popStackParameter(CONFLUENCE_CONTAINER);
+        WikiParameter nameParam = context.getParams().getParameter(PARAMETER_NAME);
+        String macroName = nameParam != null ? nameParam.getValue() : "";
+        if (this.droppedMacros != null && this.droppedMacros.contains(macroName)) {
+            context.getTagStack().popStackParameter(CONFLUENCE_IN_DROPPED_MACRO);
+            context.getScannerContext().endDocument();
+        } else {
+            ConfluenceMacro macro = (ConfluenceMacro) context.getTagStack().popStackParameter(CONFLUENCE_CONTAINER);
 
-        // We want to make sure macros in paragraphs and titles are marked as inline.
-        // We observe that Confluence exports list items like this: <li><p>content</p></li> and
-        // table cells like this: <td><p>...</p></td> so these two cases are covered.
-        // Confluence also exports block macros as <p>{block macro}</p>. We remove the extra paragraph
-        // in ConfluenceXWikiGeneratorListener.
-        IWikiScannerContext s = context.getScannerContext();
-        boolean isInline = supportsInlineMode(macro) && (
-            s.isInHeader()
-                || isInListItem(s)
-                || isInParagraph(context)
-                || isInSpan(context)
-        );
+            // We want to make sure macros in paragraphs and titles are marked as inline.
+            // We observe that Confluence exports list items like this: <li><p>content</p></li> and
+            // table cells like this: <td><p>...</p></td> so these two cases are covered.
+            // Confluence also exports block macros as <p>{block macro}</p>. We remove the extra paragraph
+            // in ConfluenceXWikiGeneratorListener.
+            IWikiScannerContext s = context.getScannerContext();
+            boolean isInline = supportsInlineMode(macro) && (
+                s.isInHeader()
+                    || isInListItem(s)
+                    || isInParagraph(context)
+                    || isInSpan(context)
+            );
 
-        s.onMacro(macro.name, macro.parameters, macro.content, isInline);
+            s.onMacro(macro.name, macro.parameters, macro.content, isInline);
+        }
     }
 
     private static boolean isInSpan(TagContext context)

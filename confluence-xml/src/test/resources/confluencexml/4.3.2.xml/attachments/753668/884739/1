@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<GlobalSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Video />
+  <Audio>
+    <MusicVolume>0.45</MusicVolume>
+    <SFXVolume>0.8</SFXVolume>
+  </Audio>
+  <Gameplay />
+  <Rendering />
+  <Hints />
+</GlobalSettings>

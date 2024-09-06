@@ -101,6 +101,7 @@ public class ConfluenceXHTMLInputFilterStream
                 }
                 parser.setReferenceConverter(this.properties.getReferenceConverter());
                 parser.setMacroSupport(this.properties.getMacroSupport());
+                parser.setDroppedMacros(this.properties.getDroppedMacros());
             } else {
                 this.renderingContext.getTargetSyntax();
             }

@@ -1972,6 +1972,7 @@ public class ConfluenceInputFilterStream
         filterProperties.setMacroContentSyntax(macroContentSyntax);
         filterProperties.setReferenceConverter(confluenceConverter);
         filterProperties.setMacroSupport(macroSupport);
+        filterProperties.setDroppedMacros(this.properties.getDroppedMacros());
 
         if (this.properties.isConvertToXWiki()) {
             filterProperties.setConverter(createConverter(null));

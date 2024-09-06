@@ -37,4 +37,8 @@ public interface ConfluenceTagHandler
      * Stack parameter key used if in a paragraph.
      */
     String CONFLUENCE_IN_PARAGRAPH = "confluence-in-paragraph";
+    /**
+     * Stack parameter key used if inside a macro that is converted into a group.
+     */
+    String CONFLUENCE_IN_DROPPED_MACRO = "confluence-in-dropped-macro";
 }

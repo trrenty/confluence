@@ -1,0 +1,85 @@
+.#------------------------------------------------------------------------------
+.input|confluence+xhtml/1.0
+.configuration.macroContentSyntax=event/1.0
+.configuration.droppedMacros=droppedMacro
+.#------------------------------------------------------------------------------
+<ac:structured-macro ac:name="droppedMacro">
+    <ac:parameter ac:name="ignoredParameter">Some Value</ac:parameter>
+    <ac:rich-text-body>
+        <p>This is some <strong>footnote</strong>.</p>
+        <ac:structured-macro ac:name="normalMacro">
+          <ac:parameter ac:name="parameter">parameter value</ac:parameter>
+          <ac:rich-text-body>
+            <p>Some content inside a macro.</p>
+          </ac:rich-text-body>
+        </ac:structured-macro>
+    </ac:rich-text-body>
+</ac:structured-macro>
+.#------------------------------------------------------------------------------
+.expect|filter+xml
+.#------------------------------------------------------------------------------
+<document>
+  <p>
+    <metadata>
+      <metadata>
+        <entry>
+          <string>syntax</string>
+          <org.xwiki.rendering.syntax.Syntax>
+            <type>
+              <name>Confluence (XHTML)</name>
+              <id>confluence</id>
+              <variants>
+                <string>xhtml</string>
+              </variants>
+            </type>
+            <version>1.0</version>
+          </org.xwiki.rendering.syntax.Syntax>
+        </entry>
+      </metadata>
+    </metadata>
+  </p>
+  <group>
+    <p>
+      <parameters>
+        <entry>
+          <string>class</string>
+          <string>confluence_droppedMacro_content</string>
+        </entry>
+      </parameters>
+    </p>
+    <paragraph>
+      <word>This</word>
+      <space/>
+      <word>is</word>
+      <space/>
+      <word>some</word>
+      <space/>
+      <format format="BOLD">
+        <word>footnote</word>
+      </format>
+      <specialSymbol>.</specialSymbol>
+    </paragraph>
+    <paragraph>
+      <word>Some</word>
+      <space/>
+      <word>content</word>
+      <space/>
+      <word>inside</word>
+      <space/>
+      <word>a</word>
+      <space/>
+      <word>macro</word>
+      <specialSymbol>.</specialSymbol>
+    </paragraph>
+    <macro id="normalMacro">
+      <p>
+        <parameters>
+          <entry>
+            <string>parameter</string>
+            <string>parameter value</string>
+          </entry>
+        </parameters>
+      </p>
+    </macro>
+  </group>
+</document>

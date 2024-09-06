@@ -67,13 +67,26 @@
         <ac:parameter ac:name="id">0s1ra5xwsnad</ac:parameter>
     </ac:structured-macro>
     <h1>Footnote</h1>
-    <ac:structured-macro ac:name="footnote" ac:schema-version="1"
-        ac:macro-id="4d0c7e18-1acb-464a-8384-ccddddb7f1a3">
-        <ac:parameter ac:name="atlassian-macro-output-type">INLINE</ac:parameter>
-        <ac:rich-text-body>
-            <p>This is some <strong>footnote</strong>.</p>
-        </ac:rich-text-body>
-    </ac:structured-macro>
+<ac:structured-macro ac:name="footnote" ac:schema-version="1"
+    ac:macro-id="89fdac2f-d31b-4af0-8b94-d1c209669e39">
+    <ac:parameter ac:name="icon">add-comment</ac:parameter>
+    <ac:parameter ac:name="title">This is some title</ac:parameter>
+    <ac:parameter ac:name="type">warning</ac:parameter>
+    <ac:parameter ac:name="class">someClass</ac:parameter>
+    <ac:rich-text-body>
+        <p>This is <em>some</em> text. <strong>Rich</strong> content text</p>
+        <ac:structured-macro ac:name="info" ac:schema-version="1"
+            ac:macro-id="d6e56c00-696b-4f62-8c0f-a127cec9c600">
+            <ac:parameter ac:name="title">Some title</ac:parameter>
+            <ac:rich-text-body>
+                <p>Some stuff</p>
+            </ac:rich-text-body>
+        </ac:structured-macro>
+        <p>
+            <br />
+        </p>
+    </ac:rich-text-body>
+</ac:structured-macro>
     <h1>Tooltip</h1>
     <p>
         <ac:structured-macro ac:name="tooltip" ac:schema-version="1"
